@@ -1,4 +1,8 @@
-import  express, { Express, Request, Response }  from "express";
+import  express, { Express }  from "express";
+import http from 'http';
+import mongoose from "mongoose";
+
+const CONNECTION_STRING: string = 'mongodb+srv://codeavl:codeavl@atlascluster.hkfwb5r.mongodb.net/?retryWrites=true&w=majority&appName=AtlasCluster';
 
 const products = [
     {
@@ -28,13 +32,24 @@ const app: Express = express();
 
 app.use(express.json());
 
-app.get("/", (req: Request, res: Response) => {
-    res.send("hello world from server")
-})
+// const server = http.createServer(app);
+
+// server.listen(8000, () => {
+//     console.log("server running on http://localhost:8000/");
+// })
 
 app.listen(8000, () => {
-    console.log(`Server is listening on port 8000`);
+    console.log("server running on http://localhost:8000/");
 })
+
+mongoose.Promise = Promise;
+mongoose.connect(CONNECTION_STRING);
+
+mongoose.connection.on('error', (error: Error) => {
+    console.log("Mongoose connecton error: ",error);
+});
+
+app.use('/users', require('./routes/user.route'));
 
 
 
